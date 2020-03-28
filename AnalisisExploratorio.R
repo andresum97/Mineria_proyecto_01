@@ -110,22 +110,108 @@ numImportaciones$DiaSem <- as.numeric(numImportaciones$DiaSem)
 matriz_cor <- cor(numImportaciones)
 corrplot(matriz_cor)
 
-View(order(table(importaciones$Pais.de.Proveniencia), decreasing = TRUE))
-View(table(importaciones$Aduana.de.Ingreso))
 
-
+# Barplot de paises de proveniencia
 paises <- data.frame(table(importaciones$Pais.de.Proveniencia))
 paises2 <- paises[order(paises[, 2], decreasing=TRUE), ]
-paises2 <- filter(paises2, paises2$Freq > 30000)
+paises2 <- filter(paises2, paises2$Freq > 10000)
 colPaises <- distinctColorPalette(length(table(importaciones$Pais.de.Proveniencia)))
 barplot(as.vector(paises2[, 2]), 
         names = as.vector(paises2[, 1]), 
         col = colPaises,
-        las = 1
+        las = 2,
+        main = "Pais de proveniencia"
 )
 
+# Barplot de aduana de ingreso
+aduana <- data.frame(table(importaciones$Aduana.de.Ingreso))
+aduana2 <- aduana[order(aduana[, 2], decreasing=TRUE), ]
+aduana2 <- filter(aduana2, aduana2$Freq > 2500)
+colAduana <- distinctColorPalette(length(table(importaciones$Aduana.de.Ingreso)))
+barplot(as.vector(aduana2[, 2]), 
+        names = as.vector(aduana2[, 1]), 
+        col = colPaises,
+        las = 2,
+        main = "Aduana de Ingreso"
+)
 
+# Barplot de marca
+marca <- data.frame(table(importaciones$Marca))
+marca2 <- marca[order(marca[, 2], decreasing=TRUE), ]
+marca2 <- filter(marca2, marca2$Freq > 10000)
+colMarca <- distinctColorPalette(length(table(importaciones$Marca)))
+barplot(as.vector(marca2[, 2]), 
+        names = as.vector(marca2[, 1]), 
+        col = colMarca,
+        las = 2,
+        main = "Marca"
+)
 
+# Barplot de linea
+linea <- data.frame(table(importaciones$Linea))
+linea2 <- linea[order(linea[, 2], decreasing=TRUE), ]
+linea2 <- filter(linea2, linea2$Freq > 7500)
+colLinea <- distinctColorPalette(length(linea2$Var1))
+barplot(as.vector(linea2[, 2]), 
+        names = as.vector(linea2[, 1]), 
+        col = colLinea,        
+        las = 2,
+        main = "Linea"
+)
 
+# Barplot de tipo de vehiculo
+vehiculo <- data.frame(table(importaciones$Tipo.de.Vehiculo))
+vehiculo2 <- vehiculo[order(vehiculo[, 2], decreasing=TRUE), ]
+vehiculo2 <- filter(vehiculo2, vehiculo2$Freq > 10000)
+colVehiculo <- distinctColorPalette(length(vehiculo2$Var1))
+barplot(as.vector(vehiculo2[, 2]), 
+        names = as.vector(vehiculo2[, 1]), 
+        col = colVehiculo,
+        las = 2,
+        main = "Tipo de vehiculo"
+)
 
+# Barplot de importador
+importador <- data.frame(table(importaciones$Tipo.de.Importador))
+importador2 <- importador[order(importador[, 2], decreasing=TRUE), ]
+colimportador <- distinctColorPalette(length(importador2$Var1))
+barplot(as.vector(importador2[, 2]), 
+        names = as.vector(importador2[, 1]), 
+        col = colimportador,
+        las = 2,
+        main = "Tipo de importador"
+)
 
+# Barplot de combustible
+combustible <- data.frame(table(importaciones$Tipo.Combustible))
+combustible2 <- combustible[order(combustible[, 2], decreasing=TRUE), ]
+colcombustible <- distinctColorPalette(length(combustible2$Var1))
+barplot(as.vector(combustible2[, 2]), 
+        names = as.vector(combustible2[, 1]), 
+        col = colcombustible,
+        las = 2,
+        main = "Tipo de combustible"
+)
+
+# Barplot de asientos
+asientos <- data.frame(table(importaciones$Asientos))
+asientos2 <- asientos[order(asientos[, 2], decreasing=TRUE), ]
+asientos2 <- filter(asientos2, asientos2$Freq > 1000)
+colasientos <- distinctColorPalette(length(asientos2$Var1))
+barplot(as.vector(asientos2[, 2]), 
+        names = as.vector(asientos2[, 1]), 
+        col = colasientos,
+        las = 2,
+        main = "Asientos"
+)
+
+# Barplot de puertas
+puertas <- data.frame(table(importaciones$Puertas))
+puertas2 <- puertas[order(puertas[, 2], decreasing=TRUE), ]
+colpuertas <- distinctColorPalette(length(puertas2$Var1))
+barplot(as.vector(puertas2[, 2]), 
+        names = as.vector(puertas2[, 1]), 
+        col = colpuertas,
+        las = 2,
+        main = "Puertas"
+)
