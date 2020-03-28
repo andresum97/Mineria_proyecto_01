@@ -1,5 +1,5 @@
 
-importaciones <- read.csv("importacionesSAT.csv", stringsAsFactors = FALSE)
+importaciones <- read.csv("importacionesVehiculosSAT.csv", stringsAsFactors = FALSE)
 fallecidos <- read.csv("fallecidos.csv", stringsAsFactors = FALSE)
 
 importaciones <- na.omit(importaciones)
