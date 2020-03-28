@@ -1,10 +1,15 @@
+library(corrplot)
+library(dplyr)
+library(randomcoloR)
+library("ggplot2")
 
-importaciones <- read.csv("importacionesVehiculosSAT.csv", stringsAsFactors = FALSE)
+importaciones <- read.csv("importacionesVehiculosSAT.csv", stringsAsFactors = FALSE, na.strings=c("", "NA"), sep = ',')
+importaciones <- na.omit(importaciones)
+
+View(importaciones)
+
 fallecidos <- read.csv("fallecidos.csv", stringsAsFactors = FALSE)
 
-importaciones <- na.omit(importaciones)
-summary(importaciones)
-length(importaciones)
 
 
 # Pais de proveniencia
@@ -85,4 +90,42 @@ View(table(importaciones$Dia))
 
 # DiaSem
 View(table(importaciones$DiaSem))
+
+
+
+numImportaciones <- select(importaciones, Modelo.del.Vehiculo, Centimetros.Cubicos, Asientos, Puertas, Tonelaje, Valor.CIF, Impuesto, Anio, Mes, Dia, DiaSem)
+# Converti a numero de ser posible
+numImportaciones$Modelo.del.Vehiculo <- as.numeric(numImportaciones$Modelo.del.Vehiculo)
+numImportaciones$Centimetros.Cubicos <- as.numeric(numImportaciones$Centimetros.Cubicos)
+numImportaciones$Asientos <- as.numeric(numImportaciones$Asientos)
+numImportaciones$Puertas <- as.numeric(numImportaciones$Puertas)
+numImportaciones$Tonelaje <- as.numeric(numImportaciones$Tonelaje)
+numImportaciones$Valor.CIF <- as.numeric(numImportaciones$Valor.CIF)
+numImportaciones$Impuesto <- as.numeric(numImportaciones$Impuesto)
+numImportaciones$Anio <- as.numeric(numImportaciones$Anio)
+numImportaciones$Mes <- as.numeric(numImportaciones$Mes)
+numImportaciones$Dia <- as.numeric(numImportaciones$Dia)
+numImportaciones$DiaSem <- as.numeric(numImportaciones$DiaSem)
+
+matriz_cor <- cor(numImportaciones)
+corrplot(matriz_cor)
+
+View(order(table(importaciones$Pais.de.Proveniencia), decreasing = TRUE))
+View(table(importaciones$Aduana.de.Ingreso))
+
+
+paises <- data.frame(table(importaciones$Pais.de.Proveniencia))
+paises2 <- paises[order(paises[, 2], decreasing=TRUE), ]
+paises2 <- filter(paises2, paises2$Freq > 30000)
+colPaises <- distinctColorPalette(length(table(importaciones$Pais.de.Proveniencia)))
+barplot(as.vector(paises2[, 2]), 
+        names = as.vector(paises2[, 1]), 
+        col = colPaises,
+        las = 1
+)
+
+
+
+
+
 
