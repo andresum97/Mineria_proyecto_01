@@ -174,6 +174,14 @@ View(merge)
 dfMerge <- as.data.frame(merge)
 # write.xlsx(dfMerge, "Grupos.xlsx")
 
+colnames(datos)
+agg <- aggregate(datos[,c('núm_corre','año_ocu','día_ocu','hora_ocu','g_hora','g_hora_5','día_sem_ocu','sexo_per','edad_quinquenales','mayor_menor','tipo_veh','marca_veh','color_veh','g_modelo_veh','tipo_eve','fall_les','int_o_noint')], by = list(datos$mes_ocu), FUN = mean)
+
+View(agg)
+
+df <- as.data.frame(agg)
+write.xlsx(df, "Cluster_fallecidos.xlsx")
+
 
 
 
