@@ -91,3 +91,64 @@ tipo_veh_plot<-aggregate(fallecidos$uno,by=list(Category=fallecidos$tipo_veh), F
 col_tipo_veh <- distinctColorPalette(length(tipo_veh_plot$Category))
 barplot(tipo_veh_plot$x,names.arg=tipo_veh_plot$Category, las=2,main = "Grafico de tipo de vehiculo involucrado",col=col_tipo_veh)
 
+#------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+library(plyr)
+library(dplyr)
+fallecidos$fall_les     <-mapvalues(fallecidos$fall_les, c(1,2), c("Fallecido","Lesionado"))
+fallecidos$int_o_noint  <-mapvalues(fallecidos$int_o_noint, c(1,2,9), c("Internado","No Internado","Ignorado"))
+fallecidos$tipo_eve     <-mapvalues(fallecidos$tipo_eve, c(1,2,3,4,5,6,7,8,99), c("Colision","Choque","Vuelco","Caida","Atropello","Derrape","Embarranco","Encuneto","Ignorado"))
+fallecidos$g_modelo_veh <-mapvalues(fallecidos$g_modelo_veh, c(1,2,3,4,5,6,99), c("1970-1979","1980-1989","1990-1999","2000-2009","2010-2019","Ignorado","Ignorado"))
+
+fallecidos$color_veh    <-mapvalues(fallecidos$color_veh,c(1,2,3,4,5,6,7,8,9,10,11,12,14,15,16,17,99),c('Rojo','Blanco','Azul','Gris','Negro','Verde','Amarillo','Celeste','Corinto','Café','Beige','Turquesa','Anaranjado','Morado','Rosado','Varios colores','Ignorado'
+))
+#fallecidos$marca_veh    <-mapvalues(fallecidos$marca_veh,)
+#-------------------------------------------------------------------------------------------------------------------------------------------------
+variable <- table(fallecidos$int_o_noint)
+barplot(variable, main="Grafico de internados", col=c("red", "yellow", "green") )
+
+variable1 <- table(fallecidos$fall_les)
+barplot(variable1, main="Grafico de Fallecidos", col=c("red", "yellow", "green") )
+
+variable1 <- table(fallecidos$tipo_eve)
+barplot(variable1, main="Grafico tipo de evento", col=c("red", "yellow", "green","blue", "skyblue", "purple","orange", "beige", "gray") )
+
+variable1 <- table(fallecidos$g_modelo_veh)
+barplot(variable1, main="Grafico modelo de vehiculo", col=c("red", "yellow", "green","blue", "skyblue", "purple","orange", "beige", "gray") )
+
+variable1 <- table(fallecidos$color_veh)
+barplot(variable1, main="Grafico color de vehiculo", col=c("yellow", "orange", "blue","beige", "white", "brown","skyblue","maroon", "gray","goldenrod3","purple","black","red","pink","turquoise","aliceblue","green") )
+#--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+#Clustering
+library(cluster) #Para calcular la silueta
+library(e1071)#para cmeans
+library(mclust) #mixtures of gaussians
+library(fpc) #para hacer el plotcluster
+library(NbClust) #Para determinar el número de clusters óptimo
+library(factoextra) #Para hacer gráficos bonitos de clustering
+
+datos<-fallecidos
+datosImportantes <- datos[c('año_ocu','hora_ocu','mes_ocu','día_sem_ocu','depto_ocu','sexo_per','tipo_veh','color_veh','modelo_veh','tipo_eve','fall_les')]
+
+#Para saber cual es el mejor numero de clusters
+wss <- (nrow(datosImportantes)-1)*sum(apply(datosImportantes,2,var))
+for (i in 2:10) 
+        wss[i] <- sum(kmeans(datosImportantes, centers=i)$withinss)
+
+# Se plotea la grafica de codo
+plot(1:10, wss, type="b", xlab="Number of Clusters",  ylab="Within groups sum of squares")
+
+km<-kmeans(datosImportantes,2)
+datos$grupo<-km$cluster
+
+plotcluster(datosImportantes,km$cluster)
+#Visualización de las k-medias
+fviz_cluster(km, data = datosImportantes,geom = "point", ellipse.type = "norm")
+#-----------------------------------------------------------------------------------------------
+#Silueta de que tan bien hizo el cluster
+silkm<-silhouette(km$cluster,dist(datosImportantes))
+mean(silkm[,3])
+
+
+
+
