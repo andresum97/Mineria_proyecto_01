@@ -118,7 +118,8 @@ barplot(variable1, main="Grafico modelo de vehiculo", col=c("red", "yellow", "gr
 variable1 <- table(fallecidos$color_veh)
 barplot(variable1, main="Grafico color de vehiculo", col=c("yellow", "orange", "blue","beige", "white", "brown","skyblue","maroon", "gray","goldenrod3","purple","black","red","pink","turquoise","aliceblue","green") )
 #--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-
+setwd("C:/Users/alber/Documents/UVG/Septimo semestre/Mineria de Datos")
+fallecidos <- read.csv("fallecidos.csv", stringsAsFactors = FALSE)
 #Clustering
 library(cluster) #Para calcular la silueta
 library(e1071)#para cmeans
@@ -128,21 +129,19 @@ library(NbClust) #Para determinar el número de clusters óptimo
 library(factoextra) #Para hacer gráficos bonitos de clustering
 
 datos<-fallecidos
-datosImportantes <- datos[c('año_ocu','hora_ocu','mes_ocu','día_sem_ocu','depto_ocu','sexo_per','tipo_veh','color_veh','modelo_veh','tipo_eve','fall_les')]
-
+datosImportantes <- datos[c('núm_corre','año_ocu','día_ocu','hora_ocu','g_hora','g_hora_5','mes_ocu','día_sem_ocu','sexo_per','edad_quinquenales','mayor_menor','tipo_veh','marca_veh','color_veh','g_modelo_veh','tipo_eve','fall_les','int_o_noint')]
 #Para saber cual es el mejor numero de clusters
 wss <- (nrow(datosImportantes)-1)*sum(apply(datosImportantes,2,var))
-for (i in 2:10) 
-        wss[i] <- sum(kmeans(datosImportantes, centers=i)$withinss)
 
-# Se plotea la grafica de codo
+for (i in 2:10) 
+  wss[i] <- sum(kmeans(datosImportantes, centers=i)$withinss)
+
 plot(1:10, wss, type="b", xlab="Number of Clusters",  ylab="Within groups sum of squares")
 
-km<-kmeans(datosImportantes,2)
+km<-kmeans(datosImportantes,3)
 datos$grupo<-km$cluster
 
-plotcluster(datosImportantes,km$cluster)
-#Visualización de las k-medias
+plotcluster(datosImportantes,km$cluster)#Visualización de las k-medias
 fviz_cluster(km, data = datosImportantes,geom = "point", ellipse.type = "norm")
 #-----------------------------------------------------------------------------------------------
 #Silueta de que tan bien hizo el cluster
