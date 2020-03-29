@@ -8,10 +8,6 @@ importaciones <- na.omit(importaciones)
 
 View(importaciones)
 
-fallecidos <- read.csv("fallecidos.csv", stringsAsFactors = FALSE)
-
-
-
 # Pais de proveniencia
 View(table(importaciones$Pais.de.Proveniencia))
 

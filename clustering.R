@@ -3,11 +3,12 @@ library(fpc)
 library(dplyr)
 library(factoextra)
 library(cluster)
+library(openxlsx)
 
 importaciones <- read.csv("importacionesVehiculosSAT.csv", stringsAsFactors = FALSE, na.strings=c("", "NA"), sep = ',')
 importaciones <- na.omit(importaciones)
 
-numImportaciones <- select(importaciones, Modelo.del.Vehiculo, Centimetros.Cubicos, Asientos, Puertas, Tonelaje, Valor.CIF, Impuesto, Anio, Mes, Dia, DiaSem)
+numImportaciones <- select(importaciones, Modelo.del.Vehiculo, Centimetros.Cubicos, Asientos, Puertas, Tonelaje, Valor.CIF, Impuesto)
 # Converti a numero de ser posible
 numImportaciones$Modelo.del.Vehiculo <- as.numeric(numImportaciones$Modelo.del.Vehiculo)
 numImportaciones$Centimetros.Cubicos <- as.numeric(numImportaciones$Centimetros.Cubicos)
@@ -20,6 +21,16 @@ numImportaciones$Anio <- as.numeric(numImportaciones$Anio)
 numImportaciones$Mes <- as.numeric(numImportaciones$Mes)
 numImportaciones$Dia <- as.numeric(numImportaciones$Dia)
 numImportaciones$DiaSem <- as.numeric(numImportaciones$DiaSem)
+
+
+importaciones$Modelo.del.Vehiculo <- as.numeric(importaciones$Modelo.del.Vehiculo)
+importaciones$Centimetros.Cubicos <- as.numeric(importaciones$Centimetros.Cubicos)
+importaciones$Asientos <- as.numeric(importaciones$Asientos)
+importaciones$Puertas <- as.numeric(importaciones$Puertas)
+importaciones$Tonelaje <- as.numeric(importaciones$Tonelaje)
+importaciones$Valor.CIF <- as.numeric(importaciones$Valor.CIF)
+importaciones$Impuesto <- as.numeric(importaciones$Impuesto)
+
 
 #---------------------- Grafica de codo para determinar el numero de clusters
 
@@ -39,10 +50,6 @@ importaciones$KGroup<-km$cluster
 plotcluster(numImportaciones, km$cluster) #grafica la ubicación de los clusters
 fviz_cluster(km, data = numImportaciones, geom = "point", ellipse.type = "norm") #gráfica con mejor visualización
 
-##  Método de la silueta
-
-silkm <- silhouette(km$cluster, dist(numImportaciones))
-mean(silkm[, 4]) # Valor obtenido: 0.8283339
 
 head(importaciones$KGroup)
 ## tabla de frecuencia proporcional 
@@ -71,9 +78,22 @@ colnames(g2Freq)[colnames(g2Freq) == "g2"] <- "Marca"
 colnames(g3Freq)[colnames(g3Freq) == "g3"] <- "Marca"
 colnames(g4Freq)[colnames(g4Freq) == "g4"] <- "Marca"
 
-colnames(g4Freq)
 merge <- merge(g1Freq, g2Freq, by = "Marca", all.x = T, all.y = F)
-View(merge)
-groupList <- list(g1, g2, g3, g4)
-Reduce(function(x, y) merge(x, y, by = "Var1", all.x = TRUE, all.y = FALSE), groupList)
+merge <- merge(merge, g3Freq, by = "Marca", all.x = T, all.y = F)
+merge <- merge(merge, g4Freq, by = "Marca", all.x = T, all.y = F)
+colnames(merge) <- c("Marca", "Freq1", "Freq2", "Freq3", "Freq4")
 
+View(merge)
+dfMerge <- as.data.frame(merge)
+# write.xlsx(dfMerge, "Grupos.xlsx")
+
+colnames(importaciones)
+agg <- aggregate(importaciones[,c("Modelo.del.Vehiculo", "Centimetros.Cubicos", "Asientos", "Puertas", "Tonelaje", "Valor.CIF", "Impuesto")], by = list(importaciones$Marca), FUN = mean)
+agg$Modelo.del.Vehiculo <- round(agg$Modelo.del.Vehiculo)
+agg$Asientos <- round(agg$Asientos)
+agg$Puertas <- round(agg$Puertas)
+
+View(agg)
+
+df <- as.data.frame(agg)
+write.xlsx(df, "Cluster.xlsx")
