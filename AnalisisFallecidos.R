@@ -123,7 +123,7 @@ fallecidos <- read.csv("fallecidos.csv", stringsAsFactors = FALSE)
 #Clustering
 
 datos<-fallecidos
-datosImportantes <- datos[c('núm_corre','año_ocu','día_ocu','hora_ocu','g_hora','g_hora_5','día_sem_ocu','sexo_per','edad_quinquenales','mayor_menor','tipo_veh','marca_veh','color_veh','g_modelo_veh','tipo_eve','fall_les','int_o_noint')]
+datosImportantes <- datos[c('núm_corre','año_ocu','día_ocu','hora_ocu','g_hora','g_hora_5','día_sem_ocu','sexo_per','edad_quinquenales','mayor_menor','marca_veh','g_modelo_veh','tipo_eve','fall_les','int_o_noint')]
 #Para saber cual es el mejor numero de clusters
 wss <- (nrow(datosImportantes)-1)*sum(apply(datosImportantes,2,var))
 
@@ -147,28 +147,28 @@ library(openxlsx)
 head(datos$grupo)
 ## tabla de frecuencia proporcional 
 g1 <- datos[datos$grupo==1, ]
-g1 <- data.frame(g1$mes_ocu)
+g1 <- data.frame(g1$tipo_veh)
 g1Freq <- as.data.frame(prop.table(table(g1))*100)
 # View(g1Freq)
 
 g2 <- datos[datos$grupo==2, ]
-g2 <- data.frame(g2$mes_ocu)
+g2 <- data.frame(g2$tipo_veh)
 g2Freq <- as.data.frame(prop.table(table(g2))*100)
 # View(g2Freq)
 
 g3 <- datos[datos$grupo==3, ]
-g3 <- data.frame(g3$mes_ocu)
+g3 <- data.frame(g3$tipo_veh)
 g3Freq <- as.data.frame(prop.table(table(g3))*100)
 # View(g3Freq)
 
-colnames(g1Freq)[colnames(g1Freq) == "g1"] <- "mes_ocu"
-colnames(g2Freq)[colnames(g2Freq) == "g2"] <- "mes_ocu"
-colnames(g3Freq)[colnames(g3Freq) == "g3"] <- "mes_ocu"
+colnames(g1Freq)[colnames(g1Freq) == "g1"] <- "tipo_veh"
+colnames(g2Freq)[colnames(g2Freq) == "g2"] <- "tipo_veh"
+colnames(g3Freq)[colnames(g3Freq) == "g3"] <- "tipo_veh"
 
-merge1 <- merge(g1Freq, g2Freq, by = "mes_ocu", all.x = T, all.y = F)
-merge <- merge(merge1, g3Freq, by = "mes_ocu", all.x = T, all.y = F)
+merge1 <- merge(g1Freq, g2Freq, by = "tipo_veh", all.x = T, all.y = F)
+merge <- merge(merge1, g3Freq, by = "tipo_veh", all.x = T, all.y = F)
 
-colnames(merge) <- c("mes_ocu", "Freq1", "Freq2", "Freq3")
+colnames(merge) <- c("tipo_veh", "Freq1", "Freq2", "Freq3")
 
 View(merge)
 dfMerge <- as.data.frame(merge)
