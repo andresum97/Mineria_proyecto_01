@@ -36,6 +36,7 @@ hist(as.numeric(importaciones$Centimetros.Cubicos[importaciones$Centimetros.Cubi
 summary(as.numeric(importaciones$Centimetros.Cubicos[importaciones$Centimetros.Cubicos!=0]))
 qqnorm(as.numeric(importaciones$Centimetros.Cubicos[importaciones$Centimetros.Cubicos!=0]))
 qqline(as.numeric(importaciones$Centimetros.Cubicos[importaciones$Centimetros.Cubicos!=0]))
+boxplot(as.numeric(importaciones$Centimetros.Cubicos[importaciones$Centimetros.Cubicos!=0]))
 
 # Distintivo
 View(table(importaciones$Distintivo))
@@ -53,27 +54,32 @@ View(table(importaciones$Tipo.Combustible))
 hist(as.numeric(importaciones$Asientos))
 qqnorm(as.numeric(importaciones$Asientos))
 qqline(as.numeric(importaciones$Asientos))
+boxplot(as.numeric(importaciones$Asientos))
 
 # Puertas
 hist(as.numeric(importaciones$Puertas))
 qqnorm(as.numeric(importaciones$Puertas))
 qqline(as.numeric(importaciones$Puertas))
+boxplot(as.numeric(importaciones$Puertas))
 
 # Tonelaje
 hist(as.numeric(importaciones$Tonelaje[importaciones$Tonelaje!=0]))
 summary(as.numeric(importaciones$Tonelaje[importaciones$Tonelaje!=0]))
 qqnorm(as.numeric(importaciones$Tonelaje))
 qqline(as.numeric(importaciones$Tonelaje))
+boxplot(as.numeric(importaciones$Tonelaje))
 
 # Valor CIF
 hist(as.numeric(importaciones$Valor.CIF[importaciones$Valor.CIF!=0]))
 qqnorm(as.numeric(importaciones$Valor.CIF))
 qqline(as.numeric(importaciones$Valor.CIF))
+boxplot(as.numeric(importaciones$Valor.CIF))
 
 # Impuesto
 hist(as.numeric(importaciones$Impuesto))
 qqnorm(as.numeric(importaciones$Impuesto))
 qqline(as.numeric(importaciones$Impuesto))
+boxplot(as.numeric(importaciones$Impuesto))
 
 # Anio
 View(table(importaciones$Anio))

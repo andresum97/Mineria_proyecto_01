@@ -54,21 +54,25 @@ fviz_cluster(km, data = numImportaciones, geom = "point", ellipse.type = "norm")
 head(importaciones$KGroup)
 ## tabla de frecuencia proporcional 
 g1 <- importaciones[importaciones$KGroup==1, ]
+summary(g1$Valor.CIF)
 g1 <- data.frame(g1$Marca)
 g1Freq <- as.data.frame(prop.table(table(g1))*100)
 # View(g1Freq)
 
 g2 <- importaciones[importaciones$KGroup==2, ]
+summary(g2$Valor.CIF)
 g2 <- data.frame(g2$Marca)
 g2Freq <- as.data.frame(prop.table(table(g2)) * 100)
 # View(g2Freq)
 
 g3 <- importaciones[importaciones$KGroup==3, ]
+summary(g3$Valor.CIF)
 g3 <- data.frame(g3$Marca)
 g3Freq <- as.data.frame(prop.table(table(g3)) * 100)
 # View(g3Freq)
 
 g4 <- importaciones[importaciones$KGroup==4, ]
+summary(g4$Valor.CIF)
 g4 <- data.frame(g4$Marca)
 g4Freq <- as.data.frame(prop.table(table(g4)) * 100)
 # View(g4Freq)
@@ -85,7 +89,7 @@ colnames(merge) <- c("Marca", "Freq1", "Freq2", "Freq3", "Freq4")
 
 View(merge)
 dfMerge <- as.data.frame(merge)
-# write.xlsx(dfMerge, "Grupos.xlsx")
+write.xlsx(dfMerge, "Grupos2.xlsx")
 
 colnames(importaciones)
 agg <- aggregate(importaciones[,c("Modelo.del.Vehiculo", "Centimetros.Cubicos", "Asientos", "Puertas", "Tonelaje", "Valor.CIF", "Impuesto")], by = list(importaciones$Marca), FUN = mean)
