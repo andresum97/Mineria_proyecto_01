@@ -34,32 +34,15 @@ datos$grupo <- km$cluster
 #g2 <- datos[datos$grupo==2, ]
 #g3 <- datos[datos$grupo==3, ]
 
-trainTree <- datos[c('g_hora_5','día_sem_ocu','sexo_per','mayor_menor','g_modelo_veh','grupo')]
-trainRowsNumber<-sample(1:nrow(trainTree),porcentaje*nrow(trainTree))
+#trainTree <- datos[c('g_hora_5','día_sem_ocu','sexo_per','mayor_menor','g_modelo_veh','grupo')]
+trainRowsNumber<-sample(1:nrow(datos),porcentaje*nrow(datos))
 
-train <- trainTree[trainRowsNumber, ]
-test <- trainTree[-trainRowsNumber, ]
+train <- datos[trainRowsNumber, ]
+test <- datos[-trainRowsNumber, ]
 
-dt_model<-rpart(as.factor(train$fall_les)~.,train,method = "class")
+dt_model<-rpart(as.factor(fall_les)~.,train,method = "class")
 plot(dt_model);text(dt_model)
 prp(dt_model)
 rpart.plot(dt_model)
+
 prediccion <- predict(dt_model, newdata = test1[,1:7])
-
-#set.seed(2)
-#trainRowsNumber<-sample(1:nrow(datos),porciento*nrow(datos))
-#train1<-datos[trainRowsNumber,]
-#test1<-datos[-trainRowsNumber,]
-#dt_model<-rpart(grupo~.,train1,method = "class")
-#plot(dt_model);text(dt_model)
-#prp(dt_model)
-#rpart.plot(dt_model)
-#prediccion <- predict(dt_model, newdata = test1[,1:7])
-
-#columnaMasAlta<-apply(prediccion, 1, function(x) colnames(prediccion)[which.max(x)])
-#test1$prediccion<-columnaMasAlta #Se le aÃ±ade al grupo de prueba el valor de la predicciÃ³n
-#View(test1)
-#cfm<-confusionMatrix(table(test1$prediccion, test1$grupo))
-#cfm
-
-
