@@ -6,33 +6,46 @@ library(randomForest)
 library(cluster) #Para calcular la silueta
 library(e1071)#para cmeans
 library(mclust) #mixtures of gaussians
-
-library(fpc)
+library(fpc) #para hacer el plotcluster
+library(NbClust) #Para determinar el número de clusters óptimo
+library(factoextra) #Para hacer gráficos bonitos de clustering
+library(tidyr)
+library(splitstackshape)
 library(plyr)
-library(dplyr)
-library(factoextra)
-library(cluster)
-library(openxlsx)
 
-#set.seed(123)
+datos <- read.csv("fallecidos.csv", stringsAsFactors = FALSE)
 
-#fallecidos <- read.csv("fallecidos.csv", stringsAsFactors = FALSE)
+datosImportantes <- datos[c('día_ocu', 'g_hora_5', 'sexo_per', 'edad_quinquenales', 'marca_veh', 'g_modelo_veh', 'tipo_eve', 'fall_les', 'int_o_noint')]
+set.seed(123)
 
-#importaciones <- read.csv("importacionesVehiculosSAT.csv", stringsAsFactors = FALSE, na.strings=c("", "NA"), sep = ',')
-#importaciones <- na.omit(importaciones)
-
-#datos<-fallecidos
-#datosImportantes <- datos[c('año_ocu','día_ocu','hora_ocu','g_hora','g_hora_5','día_sem_ocu','sexo_per','edad_quinquenales','mayor_menor','marca_veh','g_modelo_veh','tipo_eve','fall_les','int_o_noint')]
-#km<-kmeans(datosImportantes,3)
-#datos$grupo<-km$cluster
-
-#g1<- datos[datos$grupo==1,]
-#g2<- datos[datos$grupo==2,]
-#g3<- datos[datos$grupo==3,]
+datos <- na.omit(datos)
+datos <- filter(datos, datos$edad_quinquenales !=18, datos$marca_veh != 999, datos$marca_veh != 99, datos$sexo_per != 9, 
+                datos$g_modelo_veh != 99, datos$g_modelo_veh != 999, datos$tipo_eve != 99, datos$int_o_noint != 9)
 
 
-#trainTree <- datos[c('día_ocu','hora_ocu','g_hora','g_hora_5','día_sem_ocu','sexo_per','edad_quinquenales','mayor_menor','marca_veh','g_modelo_veh','grupo')]
-#porciento <- 70/100
+datosImportantes <- na.omit(datosImportantes)
+datosImportantes <- filter(datosImportantes, datosImportantes$edad_quinquenales !=18, datosImportantes$marca_veh != 999, datosImportantes$marca_veh != 99, datosImportantes$sexo_per != 9, datosImportantes$g_modelo_veh != 99, datosImportantes$g_modelo_veh != 999, datosImportantes$tipo_eve != 99, datosImportantes$int_o_noint != 9)
+porcentaje <- 0.7
+
+km<-kmeans(datosImportantes, 3)
+datos$grupo <- km$cluster
+
+#g1 <- datos[datos$grupo==1, ]
+#g2 <- datos[datos$grupo==2, ]
+#g3 <- datos[datos$grupo==3, ]
+
+trainTree <- datos[c('g_hora_5','día_sem_ocu','sexo_per','mayor_menor','g_modelo_veh','grupo')]
+trainRowsNumber<-sample(1:nrow(trainTree),porcentaje*nrow(trainTree))
+
+train <- trainTree[trainRowsNumber, ]
+test <- trainTree[-trainRowsNumber, ]
+
+dt_model<-rpart(as.factor(train$fall_les)~.,train,method = "class")
+plot(dt_model);text(dt_model)
+prp(dt_model)
+rpart.plot(dt_model)
+prediccion <- predict(dt_model, newdata = test1[,1:7])
+
 #set.seed(2)
 #trainRowsNumber<-sample(1:nrow(datos),porciento*nrow(datos))
 #train1<-datos[trainRowsNumber,]
@@ -48,28 +61,5 @@ library(openxlsx)
 #View(test1)
 #cfm<-confusionMatrix(table(test1$prediccion, test1$grupo))
 #cfm
-
-
-
-
-fallecidos <- read.csv("fallecidos.csv", stringsAsFactors = FALSE)
-datos <- fallecidos
-datos <- datos[c('día_ocu', 'g_hora_5', 'sexo_per', 'edad_quinquenales', 'marca_veh', 'g_modelo_veh', 'tipo_eve', 'fall_les', 'int_o_noint')]
-set.seed(123)
-
-datos <- na.omit(datos)
-datos <- filter(datos, datos$marca_veh != 999, datos$sexo_per != 9, datos$g_modelo_veh != 99, datos$tipo_eve != 99, datos$int_o_noint != 9)
-porcentaje <- 0.7
-
-km<-kmeans(datos, 3)
-datos$grupo <- km$cluster
-
-corte <- sample(nrow(datos), nrow(datos) * porcentaje)
-train <- datos[corte, ]
-test <- datos[-corte, ]
-
-g1 <- datos[datos$grupo==1, ]
-g2 <- datos[datos$grupo==2, ]
-g3 <- datos[datos$grupo==3, ]
 
 
