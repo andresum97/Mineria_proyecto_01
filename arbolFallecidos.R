@@ -12,6 +12,8 @@ library(factoextra) #Para hacer gr�ficos bonitos de clustering
 library(tidyr)
 library(splitstackshape)
 library(plyr)
+library(dplyr)
+
 
 datos <- read.csv("fallecidos.csv", stringsAsFactors = FALSE)
 
@@ -29,7 +31,7 @@ porcentaje <- 0.7
 
 km<-kmeans(datosImportantes, 3)
 datos$grupo <- km$cluster
-
+datos$fall_les <- mapvalues(datos$fall_les, c(1,2), c("Fallecido","Lesionado"))
 #g1 <- datos[datos$grupo==1, ]
 #g2 <- datos[datos$grupo==2, ]
 #g3 <- datos[datos$grupo==3, ]
@@ -45,4 +47,10 @@ plot(dt_model);text(dt_model)
 prp(dt_model)
 rpart.plot(dt_model)
 
-prediccion <- predict(dt_model, newdata = test1[,1:7])
+prediccion <- predict(dt_model, newdata = test[,-25])
+
+columnaMasAlta<-apply(prediccion, 1, function(x) colnames(prediccion)[which.max(x)])
+test$prediccion<-columnaMasAlta #Se le añade al grupo de prueba el valor de la predicción
+#View(test1)
+cfm<-confusionMatrix(table(test$prediccion, test$fall_les))
+cfm
